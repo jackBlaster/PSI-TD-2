@@ -572,10 +572,6 @@ namespace PSI_TD_2
 
         #endregion
 
-        /// <summary>
-        /// Crée une instance représentan les fractale de Mandelbrot
-        /// </summary>
-        /// <returns>instance de la fractale</returns>
         public static MyImage Fractale()
         {
             Console.WriteLine("Veuillez saisir les dimensions (3500x3500 recommandé) : ");
@@ -583,6 +579,18 @@ namespace PSI_TD_2
             int Hauteur = Convert.ToInt32(Console.ReadLine());
             Console.WriteLine("Largeur : ");
             int Largeur = Convert.ToInt32(Console.ReadLine());
+            return Fractale(Hauteur, Largeur);
+        }
+
+
+
+        /// <summary>
+        /// Crée une instance représentan les fractale de Mandelbrot
+        /// </summary>
+        /// <returns>instance de la fractale</returns>
+        public static MyImage Fractale(int Hauteur, int Largeur)
+        {
+            
             Console.WriteLine("Veuillez patientez, cela peut prendre quelques instants...");
             MyImage Fractale = new MyImage(Hauteur, Largeur);
             for(int i = 0; i < Hauteur; i++)

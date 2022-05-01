@@ -327,7 +327,7 @@ namespace PSI_TD_2
         /// <summary>
         /// Méthode permmetant de transformer le QR Code en instance MyImage afin de le sauvegarder sous format .bmp
         /// </summary>
-        public void Convert_QR_To_Image()
+        public MyImage Convert_QR_To_Image()
         {
             MyImage QR = new MyImage(((type - 1) * 4) + 21, ((type - 1) * 4) + 21);
             for(int i = 0; i < QR.pic.GetLength(0); i++)
@@ -339,7 +339,8 @@ namespace PSI_TD_2
                 }
             }
             QR = QR.Agrandir(10);
-            QR.Save("QR_Code.bmp");
+            //QR.Save("QR_Code.bmp");
+            return QR;
         }
 
         /// <summary>
