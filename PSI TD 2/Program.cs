@@ -10,7 +10,7 @@ namespace PSI_TD_2
         static void Main(string[] args)
         {
 
-            MyImage Image = Choix_Fichier();
+            /*MyImage Image = Choix_Fichier();
             bool leave = false;
             bool choice = false;
             int n = 0;
@@ -31,7 +31,7 @@ namespace PSI_TD_2
                 } while (!choice);
                 leave = Fin_Action(n);
                 
-            } while (!leave);
+            } while (!leave);*/
 
             /*QRCode qr = new QRCode(2);
             qr.toStringQR();
@@ -43,12 +43,11 @@ namespace PSI_TD_2
             string b = "00100000010110110000101101111000110100010111001011011100010011010100001101000000 111011000001000111101100000100011110110000010001111011000001000111101100";
             Console.WriteLine(a);
             Console.WriteLine(b);
-            Console.WriteLine(String.Equals(a,b));
+            Console.WriteLine(String.Equals(a,b));*/
             string msg = "HELLO WORLD";
-            Encoding u8 = Encoding.UTF8;
-            byte[] msgByte = u8.GetBytes(msg);
-            byte[] result = ReedSolomon.ReedSolomonAlgorithm.Encode(msgByte, 7);
-            foreach (byte val in result) Console.Write(val + " ");*/
+            byte[] msgCorrector = QRCode.Convert_Text_To_AlphaNum_Byte(msg);
+            byte[] result = ReedSolomon.ReedSolomonAlgorithm.Encode(msgCorrector, 7);
+            foreach (byte val in result) Console.Write(val + " ");
 
 
 
