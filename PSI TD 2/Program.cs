@@ -155,7 +155,7 @@ namespace PSI_TD_2
             {
                 Console.WriteLine();
             }
-            Console.WriteLine("                           Ce Projet vous a été proposé par Jade BETTOYA et Thibault BIVILLE");
+            Console.WriteLine("                           --Ce Projet vous a été proposé par Jade BETTOYA et Thibault BIVILLE--");
             Console.ReadKey();
         }
 
@@ -194,10 +194,7 @@ namespace PSI_TD_2
                     break;
                 case 2:Sous_Choix_Filtres_Effets(Image);
                     break;
-                case 3:Console.Clear();
-                    Console.WriteLine("Effet Indisponible");
-                    Console.ReadKey();
-                    Console.Clear();
+                case 3:Rotate(Image);
                     break;
                 case 4: Miroir(Image);
                     break;
@@ -262,6 +259,22 @@ namespace PSI_TD_2
                     break;
             }
            
+
+        }
+
+        public static void Rotate(MyImage Image)
+        {
+            Console.Clear();
+            Console.WriteLine("Veuillez choisir l'angle de rotation : ");
+            double angle = Convert.ToDouble(Console.ReadLine());
+            MyImage img = Image.Rotation(angle);
+            img.Save("Filtre_Rotation.bmp");
+            Console.Clear();
+            Console.WriteLine("L'image a été enregistrée sous le nom : \n" +
+                "Filtre_Rotation.bmp\n" +
+                "Veuillez saisir une touche pour continuer...");
+            Console.ReadKey();
+            Console.Clear();
 
         }
 
@@ -612,7 +625,6 @@ namespace PSI_TD_2
         {
             Console.Clear();
             string msg = "11111111111111111111111111111111111";
-            Console.WriteLine("Veuillez sasir votre message à encoder (moins de 34 caractères):");
             bool choice = false;
             do
             {

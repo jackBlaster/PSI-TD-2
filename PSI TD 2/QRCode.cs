@@ -39,6 +39,7 @@ namespace PSI_TD_2
                 Placement_Modules_V2();
                 Apply_EC_V2();
             }
+            if (type == 0) QR = null;
             string binaryMsg = Encode_Message_In_Byte(mot, type);
             Write_On_QR(binaryMsg);
 
@@ -304,7 +305,7 @@ namespace PSI_TD_2
             {
                 version = 2;
             }
-            if(mot.Length<34)
+            if(mot.Length>34)
             {
                 Console.WriteLine("Version invalide");
             }
@@ -494,8 +495,8 @@ namespace PSI_TD_2
                 compteur++;
             }
             //Application du correcteur
-            Données += Apply_Correction(Données,msg_In_Cap);
-            Console.WriteLine(Données.Length);
+            if(type == 1) Données += Apply_Correction_V1(Données,msg_In_Cap,type);
+            if(type == 2) Données += Apply_Correction_V2(Données, msg_In_Cap, type);
             return Données;           
         }    
 
@@ -542,16 +543,17 @@ namespace PSI_TD_2
         }
 
         /// <summary>
-        /// Génére les bits de corrections à l'aide de Reed-Solomon et les ajoute au code binaire du qr code
+        /// Génére les bits de corrections à l'aide de Reed-Solomon et les ajoute au code binaire du qr code version 1
         /// </summary>
         /// <param name="data">string binaire</param>
         /// <param name="msg">message initial</param>
         /// <returns></returns>
-        public static string Apply_Correction(string data, string msg)
+        public static string Apply_Correction_V1(string data, string msg,int type)
         {
-            
+
             byte[] msgByte = Convert_Text_To_AlphaNum_Byte(msg);
-            byte[] result = ReedSolomon.ReedSolomonAlgorithm.Encode(msgByte, 7);
+            byte[] result = ReedSolomon.ReedSolomonAlgorithm.Encode(msgByte, 7, ReedSolomon.ErrorCorrectionCodeType.QRCode); 
+            
             Console.WriteLine(result.Length);
             for (int i = 0; i < result.Length; i++)
             {
@@ -566,6 +568,36 @@ namespace PSI_TD_2
                     
                 }
                 
+            }
+            return data;
+        }
+
+        /// <summary>
+        /// Génére les bits de corrections à l'aide de Reed-Solomon et les ajoute au code binaire du qr code version 2
+        /// </summary>
+        /// <param name="data">string binaire</param>
+        /// <param name="msg">message initial</param>
+        /// <returns></returns>
+        public static string Apply_Correction_V2(string data, string msg, int type)
+        {
+
+            byte[] msgByte = Convert_Text_To_AlphaNum_Byte(msg);
+            byte[] result = ReedSolomon.ReedSolomonAlgorithm.Encode(msgByte, 10, ReedSolomon.ErrorCorrectionCodeType.QRCode);
+
+            Console.WriteLine(result.Length);
+            for (int i = 0; i < result.Length; i++)
+            {
+                if (Convert.ToString(result[i], 2).Length != 8)
+                {
+                    string ajout = Convert.ToString(result[i], 2);
+                    while (ajout.Length != 8)
+                    {
+                        ajout = "0" + ajout;
+                    }
+                    data += ajout;
+
+                }
+
             }
             return data;
         }
@@ -809,15 +841,20 @@ namespace PSI_TD_2
                 if (up) up = false;
                 else up = true;
             }
+            int countMask = 0;
             for(int i = 0; i < QR.GetLength(0); i++)
             {
                 for(int j = 0; j < QR.GetLength(1); j++)
                 {
-                    if(modify[i,j] && (i+j)%2 != 0)
+                    if(modify[i,j])
                     {
-                        if (QR[i, j] == 255) QR[i, j] = 0;
-                        else QR[i, j] = 255;
+                        if (countMask % 2 == 0)
+                        {
+                            if (QR[i, j] == 255) QR[i, j] = 0;
+                            else QR[i, j] = 255;
+                        }
                     }
+                    countMask++;
                 }
             }
         }

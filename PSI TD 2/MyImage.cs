@@ -426,6 +426,46 @@ namespace PSI_TD_2
             return Filtre;
         }
 
+        public MyImage Rotation(double degRot)
+        {
+            double Rad = (degRot * Math.PI) / 180;
+            double HeigthMiddle = this.Height / 2.0;
+            double WidthMiddle = this.Width / 2.0;
+            double maxSize = Math.Sqrt(HeigthMiddle * HeigthMiddle + WidthMiddle * WidthMiddle);           
+
+            MyImage imageRot = new MyImage(this.Height, this.Width);
+
+            //Rotating
+            double module;
+            double angle;
+            double X;
+            double Y;
+
+            double x2;
+            double y2;
+            for (int i = 0; i < this.Height; i++)
+                for (int j = 0; j < this.Width; j++)
+                {
+                    x2 = j - WidthMiddle;
+                    y2 = i - HeigthMiddle;
+                    module = Math.Sqrt(x2 * x2 + y2 * y2);
+
+                    if (module > maxSize)//Optimisation
+                        continue;
+
+                    angle = Math.Atan2(y2, x2) + Rad;
+                    X = Math.Cos(angle) * module;
+                    Y = Math.Sin(angle) * module;
+
+                    if (HeigthMiddle + Y >= 0 && HeigthMiddle + Y < Height && WidthMiddle + X >= 0 && WidthMiddle + X < Width)
+                    {
+                        imageRot.pic[i, j] = this.pic[(int)(WidthMiddle + Y), (int)(WidthMiddle + X)];
+                    }
+                }
+
+            return imageRot;
+        }
+
         #endregion
 
 
@@ -597,6 +637,10 @@ namespace PSI_TD_2
 
         #endregion
 
+        /// <summary>
+        /// Appelle la fonction MyImage obj.Fractale
+        /// </summary>
+        /// <returns></returns>
         public static MyImage Fractale()
         {
             Console.WriteLine("Veuillez saisir les dimensions (3500x3500 recommandé) : ");
