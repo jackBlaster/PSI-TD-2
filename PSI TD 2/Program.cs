@@ -34,7 +34,7 @@ namespace PSI_TD_2
             } while (!leave);*/
            
             string msg = "Hello World";
-            QRCode qr = new QRCode(1,msg);
+            QRCode qr = new QRCode(msg);
             qr.toStringQR();
             Console.WriteLine();
             qr.toStringModify();
