@@ -32,8 +32,7 @@ namespace PSI_TD_2
                 leave = Fin_Action(n);
                 
             } while (!leave);*/
-            string a = "001000000101101100001011011110001101000101110010110111000100110101000011010000001110110000010001111011000001000111101100000100011110110000010001111011000011111000001110010011110011000000111101";
-            Console.WriteLine(a.Length);
+           
             string msg = "Hello World";
             QRCode qr = new QRCode(1,msg);
             qr.toStringQR();
