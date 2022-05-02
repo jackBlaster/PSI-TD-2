@@ -32,22 +32,16 @@ namespace PSI_TD_2
                 leave = Fin_Action(n);
                 
             } while (!leave);*/
-
-            /*QRCode qr = new QRCode(2);
+            string a = "001000000101101100001011011110001101000101110010110111000100110101000011010000001110110000010001111011000001000111101100000100011110110000010001111011000011111000001110010011110011000000111101";
+            Console.WriteLine(a.Length);
+            string msg = "Hello World";
+            QRCode qr = new QRCode(1,msg);
             qr.toStringQR();
             Console.WriteLine();
             qr.toStringModify();
             qr.Convert_QR_To_Image();
-            string msg = "HELLO world";
-            string a = QRCode.Encode_Message_In_Byte(msg,1);
-            string b = "00100000010110110000101101111000110100010111001011011100010011010100001101000000 111011000001000111101100000100011110110000010001111011000001000111101100";
-            Console.WriteLine(a);
-            Console.WriteLine(b);
-            Console.WriteLine(String.Equals(a,b));*/
-            string msg = "HELLO WORLD";
-            byte[] msgCorrector = QRCode.Convert_Text_To_AlphaNum_Byte(msg);
-            byte[] result = ReedSolomon.ReedSolomonAlgorithm.Encode(msgCorrector, 7);
-            foreach (byte val in result) Console.Write(val + " ");
+            
+            
 
 
 

@@ -61,6 +61,16 @@ namespace PSI_TD_2
         {
             Console.WriteLine(this.Re + " + " + Im + "i");
         }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null) return false;
+            if (obj.GetType() != this.GetType()) return false;
+            Complexe another = (Complexe)obj;
+            if (this.Re != another.Re) return false;
+            if (this.Im != another.Im) return false;
+            return true;
+        }
         #endregion
     }
 }

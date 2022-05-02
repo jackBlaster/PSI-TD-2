@@ -25,13 +25,16 @@ namespace PSI_TD_2
             this.type = ChoixVersion(mot);
             this.QR = new int[((type-1)*4)+21, ((type - 1) * 4) + 21];
             this.modify = new bool[((type - 1) * 4) + 21, ((type - 1) * 4) + 21];
+            //placement des modules et du masque
             if (type == 1)
             {
                 Placement_Modules_V1();
+                Apply_Mask_V1();
             }
             if (type == 2)
             {
                 Placement_Modules_V2();
+                Apply_Mask_V2();
             }
             
         }
@@ -361,7 +364,7 @@ namespace PSI_TD_2
                 }
             }
             QR = QR.Agrandir(10);
-            //QR.Save("QR_Code.bmp");
+           QR.Save("QR_Code.bmp");
             return QR;
         }
 
@@ -411,11 +414,51 @@ namespace PSI_TD_2
                     }
                 }
             }
-
-            Données += "0000"; //terminaison
-            while (Données.Length % 8 != 0)
+            if (type == 1)
             {
-                Données += "0";
+                int pad = 152 - Données.Length;
+                if (pad != 0)
+                {
+                    if (pad < 4)
+                    {
+                        while (pad != 0)
+                        {
+                            Données += "0";
+                        }
+
+                    }
+                    else
+                    {
+                        Données += "0000"; //terminaison
+                    }
+                }
+                while (Données.Length % 8 != 0)
+                {
+                    Données += "0";
+                }
+            }
+            if (type == 2)
+            {
+                int pad = 272 - Données.Length;
+                if (pad != 0)
+                {
+                    if (pad < 4)
+                    {
+                        while (pad != 0)
+                        {
+                            Données += "0";
+                        }
+
+                    }
+                    else
+                    {
+                        Données += "0000"; //terminaison
+                    }
+                }
+                while (Données.Length % 8 != 0)
+                {
+                    Données += "0";
+                }
             }
 
             //ajout des pavés 236 17
@@ -428,7 +471,6 @@ namespace PSI_TD_2
             {
                 nbPavés = (272 - Données.Length) / 8;
             }
-            Données += " ";
             int compteur = 0;
             while (nbPavés != 0)
             {
@@ -443,9 +485,9 @@ namespace PSI_TD_2
                 nbPavés -= 1;
                 compteur++;
             }
-
             //Application du correcteur
-            
+            Données += Apply_Correction(Données,msg_In_Cap);
+            Console.WriteLine(Données.Length);
             return Données;           
         }    
 
@@ -491,11 +533,27 @@ namespace PSI_TD_2
             return result;
         }
 
-        public void Apply_Correction(string msg)
+        public static string Apply_Correction(string data, string msg)
         {
-
+            
             byte[] msgByte = Convert_Text_To_AlphaNum_Byte(msg);
             byte[] result = ReedSolomon.ReedSolomonAlgorithm.Encode(msgByte, 7);
+            Console.WriteLine(result.Length);
+            for (int i = 0; i < result.Length; i++)
+            {
+                if(Convert.ToString(result[i], 2).Length != 8) 
+                {
+                    string ajout =  Convert.ToString(result[i], 2);
+                    while(ajout.Length != 8)
+                    {
+                        ajout = "0" + ajout;
+                    }
+                    data += ajout;
+                    
+                }
+                
+            }
+            return data;
         }
 
         public static byte[] Convert_Text_To_AlphaNum_Byte(string msg)
@@ -520,9 +578,208 @@ namespace PSI_TD_2
             return msgEncoding;
         }
 
+        public void Apply_Mask_V2()
+        {
+            string mask = "111011111000100";
+            #region<QR>
+            this.QR[8, 0] = Return_value_on_Bit_Mask(mask[0]);
+            this.QR[8, 1] = Return_value_on_Bit_Mask(mask[1]);
+            this.QR[8, 2] = Return_value_on_Bit_Mask(mask[2]);
+            this.QR[8, 3] = Return_value_on_Bit_Mask(mask[3]);
+            this.QR[8, 4] = Return_value_on_Bit_Mask(mask[4]);
+            this.QR[8, 5] = Return_value_on_Bit_Mask(mask[5]);
+            this.QR[8, 7] = Return_value_on_Bit_Mask(mask[6]);
+            this.QR[8, 8] = Return_value_on_Bit_Mask(mask[7]);
+
+            this.QR[7, 8] = Return_value_on_Bit_Mask(mask[8]);
+            this.QR[5, 8] = Return_value_on_Bit_Mask(mask[9]);
+            this.QR[4, 8] = Return_value_on_Bit_Mask(mask[10]);
+            this.QR[3, 8] = Return_value_on_Bit_Mask(mask[11]);
+            this.QR[2, 8] = Return_value_on_Bit_Mask(mask[12]);
+            this.QR[1, 8] = Return_value_on_Bit_Mask(mask[13]);
+            this.QR[0, 8] = Return_value_on_Bit_Mask(mask[14]);
+
+            this.QR[24, 8] = Return_value_on_Bit_Mask(mask[0]);
+            this.QR[23, 8] = Return_value_on_Bit_Mask(mask[1]);
+            this.QR[22, 8] = Return_value_on_Bit_Mask(mask[2]);
+            this.QR[21, 8] = Return_value_on_Bit_Mask(mask[3]);
+            this.QR[20, 8] = Return_value_on_Bit_Mask(mask[4]);
+            this.QR[19, 8] = Return_value_on_Bit_Mask(mask[5]);
+            this.QR[18, 8] = Return_value_on_Bit_Mask(mask[6]);
+
+            this.QR[8, 17] = Return_value_on_Bit_Mask(mask[7]);
+            this.QR[8, 18] = Return_value_on_Bit_Mask(mask[8]);
+            this.QR[8, 19] = Return_value_on_Bit_Mask(mask[9]);
+            this.QR[8, 20] = Return_value_on_Bit_Mask(mask[10]);
+            this.QR[8, 21] = Return_value_on_Bit_Mask(mask[11]);
+            this.QR[8, 22] = Return_value_on_Bit_Mask(mask[12]);
+            this.QR[8, 23] = Return_value_on_Bit_Mask(mask[13]);
+            this.QR[8, 24] = Return_value_on_Bit_Mask(mask[14]);
+            #endregion
+
+            #region<Modify>
+            this.modify[8, 0] = false;
+            this.modify[8, 1] = false;
+            this.modify[8, 2] = false;
+            this.modify[8, 3] = false;
+            this.modify[8, 4] = false;
+            this.modify[8, 5] = false;
+            this.modify[8, 7] = false;
+            this.modify[8, 8] = false;
+
+            this.modify[7, 8] = false;
+            this.modify[5, 8] = false;
+            this.modify[4, 8] = false;
+            this.modify[3, 8] = false;
+            this.modify[2, 8] = false;
+            this.modify[1, 8] = false;
+            this.modify[0, 8] = false;
+
+            this.modify[24, 8] = false;
+            this.modify[23, 8] = false;
+            this.modify[22, 8] = false;
+            this.modify[21, 8] = false;
+            this.modify[20, 8] = false;
+            this.modify[19, 8] = false; 
+            this.modify[18, 8] = false;
+
+            this.modify[8, 17] = false;
+            this.modify[8, 18] = false;
+            this.modify[8, 19] = false;
+            this.modify[8, 20] = false;
+            this.modify[8, 21] = false;
+            this.modify[8, 22] = false;
+            this.modify[8, 23] = false;
+            this.modify[8, 24] = false;
+            #endregion
+
+        }
+
+        public void Apply_Mask_V1()
+        {
+            string mask = "111011111000100";
+            #region<QR>
+            this.QR[8, 0] = Return_value_on_Bit_Mask(mask[0]);
+            this.QR[8, 1] = Return_value_on_Bit_Mask(mask[1]);
+            this.QR[8, 2] = Return_value_on_Bit_Mask(mask[2]);
+            this.QR[8, 3] = Return_value_on_Bit_Mask(mask[3]);
+            this.QR[8, 4] = Return_value_on_Bit_Mask(mask[4]);
+            this.QR[8, 5] = Return_value_on_Bit_Mask(mask[5]);
+            this.QR[8, 7] = Return_value_on_Bit_Mask(mask[6]);
+            this.QR[8, 8] = Return_value_on_Bit_Mask(mask[7]);
+
+            this.QR[7, 8] = Return_value_on_Bit_Mask(mask[8]);
+            this.QR[5, 8] = Return_value_on_Bit_Mask(mask[9]);
+            this.QR[4, 8] = Return_value_on_Bit_Mask(mask[10]);
+            this.QR[3, 8] = Return_value_on_Bit_Mask(mask[11]);
+            this.QR[2, 8] = Return_value_on_Bit_Mask(mask[12]);
+            this.QR[1, 8] = Return_value_on_Bit_Mask(mask[13]);
+            this.QR[0, 8] = Return_value_on_Bit_Mask(mask[14]);
+
+            this.QR[20, 8] = Return_value_on_Bit_Mask(mask[0]);
+            this.QR[19, 8] = Return_value_on_Bit_Mask(mask[1]);
+            this.QR[18, 8] = Return_value_on_Bit_Mask(mask[2]);
+            this.QR[17, 8] = Return_value_on_Bit_Mask(mask[3]);
+            this.QR[16, 8] = Return_value_on_Bit_Mask(mask[4]);
+            this.QR[15, 8] = Return_value_on_Bit_Mask(mask[5]);
+            this.QR[14, 8] = Return_value_on_Bit_Mask(mask[6]);
+
+            this.QR[8, 13] = Return_value_on_Bit_Mask(mask[7]);
+            this.QR[8, 14] = Return_value_on_Bit_Mask(mask[8]);
+            this.QR[8, 15] = Return_value_on_Bit_Mask(mask[9]);
+            this.QR[8, 16] = Return_value_on_Bit_Mask(mask[10]);
+            this.QR[8, 17] = Return_value_on_Bit_Mask(mask[11]);
+            this.QR[8, 18] = Return_value_on_Bit_Mask(mask[12]);
+            this.QR[8, 19] = Return_value_on_Bit_Mask(mask[13]);
+            this.QR[8, 20] = Return_value_on_Bit_Mask(mask[14]);
+            #endregion
+
+            #region<Modify>
+            this.modify[8, 0] = false;
+            this.modify[8, 1] = false;
+            this.modify[8, 2] = false;
+            this.modify[8, 3] = false;
+            this.modify[8, 4] = false;
+            this.modify[8, 5] = false;
+            this.modify[8, 7] = false;
+            this.modify[8, 8] = false;
+
+            this.modify[7, 8] = false;
+            this.modify[5, 8] = false;
+            this.modify[4, 8] = false;
+            this.modify[3, 8] = false;
+            this.modify[2, 8] = false;
+            this.modify[1, 8] = false;
+            this.modify[0, 8] = false;
+
+            this.modify[20, 8] = false;
+            this.modify[19, 8] = false;
+            this.modify[18, 8] = false;
+            this.modify[17, 8] = false;
+            this.modify[16, 8] = false;
+            this.modify[15, 8] = false;
+            this.modify[14, 8] = false;
+
+            this.modify[8, 13] = false;
+            this.modify[8, 14] = false;
+            this.modify[8, 15] = false;
+            this.modify[8, 16] = false;
+            this.modify[8, 17] = false;
+            this.modify[8, 18] = false;
+            this.modify[8, 19] = false;
+            this.modify[8, 20] = false;
+            #endregion
+
+        }
+
+        /// <summary>
+        /// Méthode qui retourne 255 si le char est '1', 0 sinon
+        /// </summary>
+        /// <param name="a">char à analyser</param>
+        /// <returns>255 ou 0</returns>
+        public static int Return_value_on_Bit_Mask(char a)
+        {
+            if (a == '1') return 0;
+            return 255;
+        }
+
         public void Write_On_QR(string BinaryMsg)
         {
-
+            bool up = true;//true si l'écriture est montante, false sinon
+            int binaryCount = BinaryMsg.Length-1;
+            for(int j = QR.GetLength(0)-1; j > 0; j-=2)
+            {
+                for(int i = QR.GetLength(0)-1; i > 0; i --)
+                {
+                    if (up) {
+                        if (modify[i, j])
+                        {
+                            
+                            if (BinaryMsg[BinaryMsg.Length - binaryCount] == '1') QR[i, j] = 0;
+                            else QR[i, j] = 255;
+                            binaryCount--;
+                            if (BinaryMsg[BinaryMsg.Length - binaryCount] == '1') QR[i, j - 1] = 0;
+                            else QR[i, j - 1] = 255;
+                            binaryCount--;                           
+                        }
+                    }
+                    else
+                    {
+                        if (modify[QR.GetLength(0) - i, j])
+                        {
+                            if (BinaryMsg[BinaryMsg.Length-1 - binaryCount] == '1') QR[QR.GetLength(0) - i, j] = 0;
+                            else QR[QR.GetLength(0) - i, j] = 255;
+                            binaryCount--;
+                            if (BinaryMsg[BinaryMsg.Length-1 - binaryCount] == '1') QR[QR.GetLength(0) - i, j - 1] = 0;
+                            else QR[QR.GetLength(0) - i, j - 1] = 255;
+                            binaryCount--;
+                        }
+                    }
+                    
+                }
+                if (up) up = false;
+                else up = true;
+            }
         }
         #endregion
     }
