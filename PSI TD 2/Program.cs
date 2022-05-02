@@ -89,16 +89,29 @@ namespace PSI_TD_2
             return EndianInInt;
         }
 
+        public static string TestIntToEndian(int val) 
+        {
+            string result = "";
+            int value = val;
+            while (value != 0)
+            {
+                result += Convert.ToString(Convert.ToByte(value % 256)) + " ";
+
+                value /= 256;
+            }
+            return result;
+        }
+
         /// <summary>
         /// Permet d'écrire un nombre sur un fichier
         /// </summary>
         /// <param name="n">nombre</param>
         /// <param name="s">stream</param>
-        public static void WriteInt(int n, Stream s)
+        public static void WriteInt(int n, Stream s) //Stream car + simple et utilise moins de mémoire
         {
             for (int i = 0; i < 4; i++)
             {
-                s.WriteByte((byte)(n % 256));
+                s.WriteByte((byte)(n % 256));  // Ecrit int en endian dans le stream
                 n /= 256;
             }
         }

@@ -28,13 +28,25 @@ namespace PSI_TD_2
         }
 
         [TestMethod]
-        public void Test_Constructeur_Image()
+        public void TestIntToEndian()
         {
-            MyImage image = new MyImage(30, 30);
-            image.SetPixel(10, 10, new Pixel(9, 45, 63));
-            image.Save("testuni.bmp");
+            string valuetest = Program.TestIntToEndian(1223452);
+            string resultat = "28 171 18 ";
+            Assert.AreEqual(valuetest, resultat);
         }
 
+        [TestMethod]
+        public void TestChoixVersion()
+        {
+            int valuetest = QRCode.ChoixVersion("HELLO WORLD");
+            int valuetest2 = QRCode.ChoixVersion("HELLO THIS IS JADE AND THIBAULT");
+            Assert.AreEqual(valuetest, 1);
+            Assert.AreEqual(valuetest2, 2);
+
+        }
+
+
+        /*
         [TestMethod]
 
         public void Test_Fractale()
@@ -42,6 +54,7 @@ namespace PSI_TD_2
             MyImage.Fractale(3500,3500).Save("testfractale.bmp");
         }
 
+        
         [TestMethod]
         public void Test_QRCode()
         {
@@ -49,6 +62,7 @@ namespace PSI_TD_2
             QRtest.Write_On_QR("HELLO WORLD");
             QRtest.Convert_QR_To_Image().Save("TestQR.bmp");
         }
+        */
 
     }
 }

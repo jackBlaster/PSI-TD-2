@@ -20,9 +20,9 @@ namespace PSI_TD_2
 
         #region<Constructeur>
 
-        public QRCode(int type)//mettre les traits rouges et les separators
+        public QRCode(string mot)//mettre les traits rouges et les separators
         {
-            this.type = type;
+            this.type = ChoixVersion(mot);
             this.QR = new int[((type-1)*4)+21, ((type - 1) * 4) + 21];
             this.modify = new bool[((type - 1) * 4) + 21, ((type - 1) * 4) + 21];
             if (type == 1)
@@ -33,6 +33,7 @@ namespace PSI_TD_2
             {
                 Placement_Modules_V2();
             }
+            
         }
 
         #endregion
@@ -277,7 +278,28 @@ namespace PSI_TD_2
             this.QR[18, 18] = 0;
             this.modify[18, 18] = false;
         }
-    
+
+
+        public static int ChoixVersion(string mot)
+        {
+
+            int version = 0;
+            if (mot.Length <= 19)
+            {
+                version = 1;
+
+            }
+            if (mot.Length > 19 && mot.Length <= 34)
+            {
+                version = 2;
+            }
+            else
+            {
+                Console.WriteLine("Version invalide");
+            }
+            return version;
+        }
+
         /// <summary>
         /// Méthode permettant d'fficher sur la console une visuation du QR Code ('H' ->pixel noir | "." ->pixel blanc)
         /// </summary>
