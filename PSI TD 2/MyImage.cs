@@ -70,7 +70,7 @@ namespace PSI_TD_2
                     this.pic[i, j] = new Pixel((byte)s.ReadByte(), (byte)s.ReadByte(), (byte)s.ReadByte());
 
                 for (int j = 0; j < Padding; j++)
-                    s.ReadByte();//Bourrage
+                    s.ReadByte(); //Bourrage
             }
         }
 
@@ -220,6 +220,31 @@ namespace PSI_TD_2
                         copy.pic[i, j] = Pixel.BLACK;
                     else
                         copy.pic[i, j] = Pixel.WHITE;
+                }
+            }
+
+            return copy;
+
+        }
+
+
+        public MyImage Negatif()
+        {
+
+            MyImage copy = new MyImage(this.Height, this.Width);
+
+            Pixel p;
+
+            for (int i = 0; i < Height; i++)
+            {
+                for (int j = 0; j < Width; j++)
+                {
+                    p = this.pic[i, j];
+                    if (p == null)
+                        p = new Pixel(255, 255, 255);
+
+                    copy.pic[i, j] = new Pixel((byte)(255-p.R), (byte)(255-p.G), (byte)(255-p.B));
+
                 }
             }
 
