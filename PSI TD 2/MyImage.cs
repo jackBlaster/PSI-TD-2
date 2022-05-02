@@ -227,7 +227,10 @@ namespace PSI_TD_2
 
         }
 
-
+        /// <summary>
+        /// Crée le négatif d'une image
+        /// </summary>
+        /// <returns>image négative</returns>
         public MyImage Negatif()
         {
 
@@ -426,6 +429,11 @@ namespace PSI_TD_2
             return Filtre;
         }
 
+        /// <summary>
+        /// Méthode qui permet une roattion de l'image
+        /// </summary>
+        /// <param name="degRot"></param>
+        /// <returns></returns>
         public MyImage Rotation(double degRot)
         {
             double Rad = (degRot * Math.PI) / 180;
@@ -459,7 +467,7 @@ namespace PSI_TD_2
 
                     if (HeigthMiddle + Y >= 0 && HeigthMiddle + Y < Height && WidthMiddle + X >= 0 && WidthMiddle + X < Width)
                     {
-                        imageRot.pic[i, j] = this.pic[(int)(WidthMiddle + Y), (int)(WidthMiddle + X)];
+                        imageRot.pic[i, j] = this.pic[(int)(HeigthMiddle + Y), (int)(WidthMiddle + X)];
                     }
                 }
 

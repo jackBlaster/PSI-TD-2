@@ -18,7 +18,7 @@ namespace PSI_TD_2
             int n = 0;
             do
             {
-                Menu(Image);
+                Menu(Image,choice);
                 Console.Clear();
                 
                 do
@@ -38,7 +38,7 @@ namespace PSI_TD_2
             Conclu();
         }
 
-        #region<Méthodes de convertion>
+        #region<Méthodes de conversion>
         
         /// <summary>
         /// Convertis le n en endian dans le tableau d'octet à l'index choisi du header
@@ -163,7 +163,7 @@ namespace PSI_TD_2
         /// Menu de selection principal
         /// </summary>
         /// <param name="Image">Instance utilisée</param>
-        public static void Menu(MyImage Image)
+        public static void Menu(MyImage Image,bool b)
         {
             int n = 0;
             bool choice = false;
@@ -177,10 +177,12 @@ namespace PSI_TD_2
                     "5- Agrandir/Rétrécir\n" +
                     "6- Histogrammes\n" +
                     "7- Fractales\n" +
-                    "8- Qr Code");
+                    "8- Qr Code\n" +
+                    "9- Négatif\n" +
+                    "10- Quitter le programme");
                 n = Convert.ToInt32(Console.ReadLine());
                 if (n == null) n = 0;
-                choice = Test_Bool_Selections(n,8);
+                choice = Test_Bool_Selections(n,10);
                 if (!choice)
                 {
                     Console.Clear();
@@ -206,6 +208,9 @@ namespace PSI_TD_2
                     break;
                 case 8:Init_QR();
                     break;
+                case 9:Negatif(Image);
+                    break;
+                case 10: b = true; break;
 
             }
             
@@ -636,10 +641,28 @@ namespace PSI_TD_2
             QRCode myQR = new QRCode(msg);
             MyImage QR = myQR.Convert_QR_To_Image();
             QR.Save("QR-Code.bmp");
+            Console.Clear();
             Console.WriteLine("Votre fichier à été enregistré sous le nom :\n" +
                 "QR-Code.bmp\n" +
                 "Veuillez appuyer sur une touche pour continuer...");
             Console.ReadKey();
+        }
+
+        /// <summary>
+        /// Permet d'appeler la fonction prr appliquer le filtre négatif
+        /// </summary>
+        /// <param name="Image">image de base</param>
+        public static void Negatif(MyImage Image)
+        {
+            Console.Clear();
+            MyImage im = Image;
+            im.Negatif();
+            im.Save("Filtre_Negatif.bmp");
+            Console.WriteLine("L'image a été enregistrée sous le nom :\n" +
+                "Filtre_Negatif.bmp\n" +
+                "Veuillez saisir une touche pour continuer...");
+            Console.ReadKey();
+            Console.Clear();
         }
         #endregion
 

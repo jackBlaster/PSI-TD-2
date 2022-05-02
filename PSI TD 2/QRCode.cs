@@ -12,7 +12,7 @@ namespace PSI_TD_2
 
         #region<Attributs>
 
-        int type;
+        int type;//version
         bool[,] modify;
         int[,] QR;  //255 => case blanche | 0 => case noire
 
@@ -393,13 +393,13 @@ namespace PSI_TD_2
             //encodage de la taille du message sur 9 bits
             int[] DonnéesCodeAlphaNum = new int[msg.Length];
             string msgSizeString = Convert.ToString(Convert.ToByte(msg.Length),2);//convertit on byte en string sous forme binaire
-            while (msgSizeString.Length % 9 != 0) 
+            while (msgSizeString.Length % 9 != 0) //il faut écrire sur 9 bits
             {
                 msgSizeString = "0" + msgSizeString;
             }
             Données += msgSizeString;
 
-            if(msg.Length % 2 == 0)
+            if(msg.Length % 2 == 0)//on prends les lettres 2 par 2
             {
                 for (int i = 0; i < msg.Length - 1; i += 2)
                 {
@@ -423,6 +423,7 @@ namespace PSI_TD_2
                     }
                 }
             }
+            //Terminaison
             if (type == 1)
             {
                 int pad = 152 - Données.Length;
@@ -441,7 +442,7 @@ namespace PSI_TD_2
                         Données += "0000"; //terminaison
                     }
                 }
-                while (Données.Length % 8 != 0)
+                while (Données.Length % 8 != 0)//multiple de 8
                 {
                     Données += "0";
                 }
@@ -533,7 +534,7 @@ namespace PSI_TD_2
             {
                 nbEqData = ( dataAlphanumCode[0]);
             }
-            result = Convert.ToString(nbEqData, 2);
+            result = Convert.ToString(nbEqData, 2);// le 2 signifie ecrit en base 2
             while (result.Length % taille != 0)
             {
                 result = "0" + result;
@@ -551,25 +552,22 @@ namespace PSI_TD_2
         public static string Apply_Correction_V1(string data, string msg,int type)
         {
 
-            byte[] msgByte = Convert_Text_To_AlphaNum_Byte(msg);
-            byte[] result = ReedSolomon.ReedSolomonAlgorithm.Encode(msgByte, 7, ReedSolomon.ErrorCorrectionCodeType.QRCode); 
+            byte[] msgByte = Convert_Text_To_AlphaNum_Byte(data);
+            byte[] result = ReedSolomon.ReedSolomonAlgorithm.Encode(msgByte, 7, ReedSolomon.ErrorCorrectionCodeType.QRCode);
+            string ec = "";
             
-            Console.WriteLine(result.Length);
             for (int i = 0; i < result.Length; i++)
-            {
-                if(Convert.ToString(result[i], 2).Length != 8) 
-                {
+            {               
                     string ajout =  Convert.ToString(result[i], 2);
                     while(ajout.Length != 8)
                     {
                         ajout = "0" + ajout;
                     }
-                    data += ajout;
-                    
-                }
-                
+
+                    ec += ajout;
+                                   
             }
-            return data;
+            return ec;
         }
 
         /// <summary>
@@ -577,55 +575,66 @@ namespace PSI_TD_2
         /// </summary>
         /// <param name="data">string binaire</param>
         /// <param name="msg">message initial</param>
-        /// <returns></returns>
+        /// <returns>string de bits représentant la correction</returns>
         public static string Apply_Correction_V2(string data, string msg, int type)
         {
 
-            byte[] msgByte = Convert_Text_To_AlphaNum_Byte(msg);
+            byte[] msgByte = Convert_Text_To_AlphaNum_Byte(data);
             byte[] result = ReedSolomon.ReedSolomonAlgorithm.Encode(msgByte, 10, ReedSolomon.ErrorCorrectionCodeType.QRCode);
-
+            string ec = "";
             Console.WriteLine(result.Length);
             for (int i = 0; i < result.Length; i++)
             {
-                if (Convert.ToString(result[i], 2).Length != 8)
+               
+                string ajout = Convert.ToString(result[i], 2);
+                while (ajout.Length != 8)
                 {
-                    string ajout = Convert.ToString(result[i], 2);
-                    while (ajout.Length != 8)
-                    {
                         ajout = "0" + ajout;
-                    }
-                    data += ajout;
-
                 }
+                ec += ajout;
+
+                
 
             }
-            return data;
+
+            return ec;
+        }
+
+        /// <summary>
+        /// Convertit un string binaire en byte à un index
+        /// </summary>
+        /// <param name="bin">string binaire</param>
+        /// <param name="index">index à remplir</param>
+        /// <returns>byte</returns>
+        public static byte Convert_String_To_Byte(string bin,int index)
+        {
+            
+            int val = 0;
+            int power = 1;
+            for(int i = 7; i >= 0; i--)
+            {
+                val += (bin[index+i]== '1'? 1:0)*power;
+                power *= 2;
+            }
+            
+            return (byte)val;
         }
 
         /// <summary>
         /// Associe à un string un tableau de byte avec le code alpha numérique de chaque caractère 
         /// </summary>
-        /// <param name="msg">message</param>
+        /// <param name="data">message en binaire</param>
         /// <returns>tableau avec le message en code alphanumérique</returns>
-        public static byte[] Convert_Text_To_AlphaNum_Byte(string msg)
+        public static byte[] Convert_Text_To_AlphaNum_Byte(string data)
         {
-            byte[] msgEncoding = new byte[msg.Length];
-            string AlphaNum = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:";
-            int[] dataAlphanumCode = new int[msg.Length];
-            for (int i = 0; i < msg.Length; i++)
+            
+            byte[] msgEncoding = new byte[data.Length/8];
+            for(int i = 0; i < msgEncoding.Length; i++)
             {
-                for (int j = 0; j < AlphaNum.Length; j++)
-                {
-                    if (msg[i] == AlphaNum[j])
-                    {
-                        dataAlphanumCode[i] = j;//ex : si data ="HE" -> AlphanumCode = {17,14}
-                    }
-                }
+                msgEncoding[i] = Convert_String_To_Byte(data, i * 8);
+                
             }
-            for(int i = 0; i < dataAlphanumCode.Length; i++)
-            {
-                msgEncoding[i] = (byte)dataAlphanumCode[i];
-            }
+  
             return msgEncoding;
         }
 
@@ -806,41 +815,16 @@ namespace PSI_TD_2
         /// <param name="BinaryMsg">string message en binaire</param>
         public void Write_On_QR(string BinaryMsg)
         {
-            bool up = true;//true si l'écriture est montante, false sinon
-            int binaryCount = BinaryMsg.Length-1;
-            for(int j = QR.GetLength(0)-1; j > 0; j-=2)
+            Iterateur iterateur = new Iterateur(modify);
+            int count = 0;
+            do
             {
-                for(int i = QR.GetLength(0)-1; i > 0; i --)
-                {
-                    if (up) {
-                        if (modify[i, j])
-                        {
-                            
-                            if (BinaryMsg[BinaryMsg.Length - binaryCount] == '1') QR[i, j] = 0;
-                            else QR[i, j] = 255;
-                            binaryCount--;
-                            if (BinaryMsg[BinaryMsg.Length - binaryCount] == '1') QR[i, j - 1] = 0;
-                            else QR[i, j - 1] = 255;
-                            binaryCount--;                           
-                        }
-                    }
-                    else
-                    {
-                        if (modify[QR.GetLength(0) - i, j])
-                        {
-                            if (BinaryMsg[BinaryMsg.Length-1 - binaryCount] == '1') QR[QR.GetLength(0) - i, j] = 0;
-                            else QR[QR.GetLength(0) - i, j] = 255;
-                            binaryCount--;
-                            if (BinaryMsg[BinaryMsg.Length-1 - binaryCount] == '1') QR[QR.GetLength(0) - i, j - 1] = 0;
-                            else QR[QR.GetLength(0) - i, j - 1] = 255;
-                            binaryCount--;
-                        }
-                    }
-                    
-                }
-                if (up) up = false;
-                else up = true;
-            }
+                QR[iterateur.Y, iterateur.X] = BinaryMsg[count] == '1' ? 0 : 255; //if =='1' => 0 (noir) sinon 255 (blanc)
+                iterateur.Next();
+                count++;
+            } while (iterateur.HasNext() && count<BinaryMsg.Length);
+
+           
             int countMask = 0;
             for(int i = 0; i < QR.GetLength(0); i++)
             {
