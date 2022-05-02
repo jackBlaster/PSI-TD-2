@@ -37,8 +37,7 @@ namespace PSI_TD_2
                 Apply_Mask_V2();
             }
             
-        }
-
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   }
         #endregion
 
         #region<Méthodes>
@@ -296,7 +295,7 @@ namespace PSI_TD_2
             {
                 version = 2;
             }
-            else
+            if(mot.Length<34)
             {
                 Console.WriteLine("Version invalide");
             }
@@ -779,6 +778,17 @@ namespace PSI_TD_2
                 }
                 if (up) up = false;
                 else up = true;
+            }
+            for(int i = 0; i < QR.GetLength(0); i++)
+            {
+                for(int j = 0; j < QR.GetLength(1); j++)
+                {
+                    if(modify[i,j] && (i+j)%2 != 0)
+                    {
+                        if (QR[i, j] == 255) QR[i, j] = 0;
+                        else QR[i, j] = 255;
+                    }
+                }
             }
         }
         #endregion
