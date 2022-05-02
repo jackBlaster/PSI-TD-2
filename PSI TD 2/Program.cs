@@ -9,8 +9,10 @@ namespace PSI_TD_2
     {
         static void Main(string[] args)
         {
-
-            /*MyImage Image = Choix_Fichier();
+            Intro();
+            Console.ReadKey();
+            Console.Clear();
+            MyImage Image = Choix_Fichier();
             bool leave = false;
             bool choice = false;
             int n = 0;
@@ -31,22 +33,9 @@ namespace PSI_TD_2
                 } while (!choice);
                 leave = Fin_Action(n);
                 
-            } while (!leave);*/
-           
-            string msg = "Hello World";
-            QRCode qr = new QRCode(msg);
-            qr.toStringQR();
-            Console.WriteLine();
-            qr.toStringModify();
-            qr.Convert_QR_To_Image();
-            
-            
+            } while (!leave);
 
-
-
-
-
-
+            Conclu();
         }
 
         #region<Méthodes de convertion>
@@ -82,6 +71,11 @@ namespace PSI_TD_2
             return EndianInInt;
         }
 
+        /// <summary>
+        /// Convert en string un int en binaire
+        /// </summary>
+        /// <param name="val">valeur decimale</param>
+        /// <returns>string représentant va en binaire</returns>
         public static string TestIntToEndian(int val) 
         {
             string result = "";
@@ -131,6 +125,41 @@ namespace PSI_TD_2
         #region<Méthodes pour le Menu>
 
         /// <summary>
+        /// Introduction du programme
+        /// </summary>
+        public static void Intro()
+        {
+            for(int i = 0; i < 6; i++)
+            {
+                Console.WriteLine();
+            }
+            Console.WriteLine("                                      -----|| PROJET SCIENTIFIQUE INFORMATIQUE ||-----");
+            for (int i = 0; i < 6; i++)
+            {
+                Console.WriteLine();
+            }
+            Console.WriteLine("                              ---| Présenté par Jade BETTOYA et Thibault BIVILLE ESILV A2 |---");
+            for (int i = 0; i < 8; i++)
+            {
+                Console.WriteLine();
+            }
+            Console.WriteLine("                                          Cliquez sur une touche pour continuer...");
+        }
+
+        /// <summary>
+        /// Crédits
+        /// </summary>
+        public static void Conclu()
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                Console.WriteLine();
+            }
+            Console.WriteLine("                           Ce Projet vous a été proposé par Jade BETTOYA et Thibault BIVILLE");
+            Console.ReadKey();
+        }
+
+        /// <summary>
         /// Menu de selection principal
         /// </summary>
         /// <param name="Image">Instance utilisée</param>
@@ -178,8 +207,7 @@ namespace PSI_TD_2
                     break;
                 case 7:Fractales_Menu();
                     break;
-                case 8:Console.WriteLine("Indisponible pour le moment");
-                    Console.ReadKey();
+                case 8:Init_QR();
                     break;
 
             }
@@ -562,7 +590,7 @@ namespace PSI_TD_2
         }
 
         /// <summary>
-        /// Permet d'appelé la méthode d'instance MyImage.Fractale
+        /// Permet d'appeler la méthode d'instance MyImage.Fractale
         /// </summary>
         public static void Fractales_Menu()
         {
@@ -575,6 +603,31 @@ namespace PSI_TD_2
             Console.WriteLine("Veuillez appuyer sur une touche pour continuer...");
             Console.ReadKey();
             Console.Clear();
+        }
+
+        /// <summary>
+        /// Méthode qui lance la création et la sauvegarde en .bmp d'un qr code
+        /// </summary>
+        public static void Init_QR()
+        {
+            Console.Clear();
+            string msg = "11111111111111111111111111111111111";
+            Console.WriteLine("Veuillez sasir votre message à encoder (moins de 34 caractères):");
+            bool choice = false;
+            do
+            {
+                Console.WriteLine("Veuillez sasir votre message à encoder (moins de 34 caractères):");
+                msg = Console.ReadLine();
+                if (msg.Length < 34) choice = true;
+                if (!choice) Console.WriteLine("Message trop long");
+            } while (!choice);
+            QRCode myQR = new QRCode(msg);
+            MyImage QR = myQR.Convert_QR_To_Image();
+            QR.Save("QR-Code.bmp");
+            Console.WriteLine("Votre fichier à été enregistré sous le nom :\n" +
+                "QR-Code.bmp\n" +
+                "Veuillez appuyer sur une touche pour continuer...");
+            Console.ReadKey();
         }
         #endregion
 

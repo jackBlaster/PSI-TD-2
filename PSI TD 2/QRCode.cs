@@ -19,25 +19,30 @@ namespace PSI_TD_2
         #endregion
 
         #region<Constructeur>
-
-        public QRCode(string mot)//mettre les traits rouges et les separators
+        /// <summary>
+        /// Construit un QR code à partir d'un string
+        /// </summary>
+        /// <param name="mot">mot à placer dans le qr code</param>
+        public QRCode(string mot)
         {
             this.type = ChoixVersion(mot);
-            this.QR = new int[((type-1)*4)+21, ((type - 1) * 4) + 21];
+            this.QR = new int[((type - 1) * 4) + 21, ((type - 1) * 4) + 21];
             this.modify = new bool[((type - 1) * 4) + 21, ((type - 1) * 4) + 21];
             //placement des modules et du masque
             if (type == 1)
             {
                 Placement_Modules_V1();
-                Apply_Mask_V1();
+                Apply_EC_V1();
             }
             if (type == 2)
             {
                 Placement_Modules_V2();
-                Apply_Mask_V2();
+                Apply_EC_V2();
             }
-            
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   }
+            string binaryMsg = Encode_Message_In_Byte(mot, type);
+            Write_On_QR(binaryMsg);
+
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  }
         #endregion
 
         #region<Méthodes>
@@ -281,7 +286,11 @@ namespace PSI_TD_2
             this.modify[18, 18] = false;
         }
 
-
+        /// <summary>
+        /// Méthode qui choisit la version la version du qr code à générer à partir de la taille du string
+        /// </summary>
+        /// <param name="mot"></param>
+        /// <returns>1 pour version 1, 2 pour version 2, "Choix Invalide sinon"</returns>
         public static int ChoixVersion(string mot)
         {
 
@@ -532,6 +541,12 @@ namespace PSI_TD_2
             return result;
         }
 
+        /// <summary>
+        /// Génére les bits de corrections à l'aide de Reed-Solomon et les ajoute au code binaire du qr code
+        /// </summary>
+        /// <param name="data">string binaire</param>
+        /// <param name="msg">message initial</param>
+        /// <returns></returns>
         public static string Apply_Correction(string data, string msg)
         {
             
@@ -555,6 +570,11 @@ namespace PSI_TD_2
             return data;
         }
 
+        /// <summary>
+        /// Associe à un string un tableau de byte avec le code alpha numérique de chaque caractère 
+        /// </summary>
+        /// <param name="msg">message</param>
+        /// <returns>tableau avec le message en code alphanumérique</returns>
         public static byte[] Convert_Text_To_AlphaNum_Byte(string msg)
         {
             byte[] msgEncoding = new byte[msg.Length];
@@ -577,7 +597,10 @@ namespace PSI_TD_2
             return msgEncoding;
         }
 
-        public void Apply_Mask_V2()
+        /// <summary>
+        /// Applique les bits de corrections et de donnée sur la matrice de base (sans le message) sur une version 1
+        /// </summary>
+        public void Apply_EC_V2()
         {
             string mask = "111011111000100";
             #region<QR>
@@ -654,7 +677,10 @@ namespace PSI_TD_2
 
         }
 
-        public void Apply_Mask_V1()
+        /// <summary>
+        /// Applique les bits de corrections et de donnée sur la matrice de base (sans le message) sur une version 2
+        /// </summary>
+        public void Apply_EC_V1()
         {
             string mask = "111011111000100";
             #region<QR>
@@ -742,6 +768,10 @@ namespace PSI_TD_2
             return 255;
         }
 
+        /// <summary>
+        /// Ecrit le message binaire directement sur la matrice du qr code
+        /// </summary>
+        /// <param name="BinaryMsg">string message en binaire</param>
         public void Write_On_QR(string BinaryMsg)
         {
             bool up = true;//true si l'écriture est montante, false sinon
