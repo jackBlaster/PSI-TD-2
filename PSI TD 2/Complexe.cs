@@ -57,11 +57,19 @@ namespace PSI_TD_2
             return new Complexe(RE, IM);
         }
 
+        /// <summary>
+        /// affiche le string sous forme "Re+Im*i"
+        /// </summary>
         public void toString()
         {
             Console.WriteLine(this.Re + " + " + Im + "i");
         }
 
+        /// <summary>
+        /// Comparateur de complexes
+        /// </summary>
+        /// <param name="obj">objet à comparer avec l'instance</param>
+        /// <returns></returns>
         public override bool Equals(object obj)
         {
             if (obj == null) return false;
