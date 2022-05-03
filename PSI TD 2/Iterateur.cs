@@ -9,6 +9,9 @@ namespace PSI_TD_2
     class Iterateur
     {
         //Variables
+        /// <summary>
+        /// prends la valeur true si c'est la case de gauche, false sinon
+        /// </summary>
         private bool IsLeft
         {
             get
@@ -21,6 +24,7 @@ namespace PSI_TD_2
                     return X % 2 == 1;
             }
         }
+
         public int X { get; private set; }
         public int Y { get; private set; }
         private bool up  = true;
@@ -37,18 +41,31 @@ namespace PSI_TD_2
         }
 
         //Methodes
+        /// <summary>
+        /// Méthode qui permet à l'itérateur d'aller sur la case de gauche
+        /// </summary>
         private void GoLeft()
         {
             if (X == 7)
                 X -= 1;
             X -= 1;
         }
+
+        /// <summary>
+        /// Permet à l'iterateur d'aller sur la case de droite
+        /// </summary>
         private void GoRight()
         {
             if (X == 5)
                 X += 1;
             X += 1;
         }
+
+        /// <summary>
+        /// renvoie true si l'itérateur est au bout de la colonne
+        /// </summary>
+        /// <param name="i"></param>
+        /// <returns></returns>
         private bool AtBound(int i)
         {
             if (up && i == 0)
@@ -57,10 +74,19 @@ namespace PSI_TD_2
                 return true;
             return false;
         }
+
+        /// <summary>
+        /// Renvoie true si suivant, false si fin
+        /// </summary>
+        /// <returns></returns>
         public bool HasNext()
         {
             return X >= 0;
         }
+
+        /// <summary>
+        /// Permet d'appeler la fonction pour passer a la case suivante qu'il reste des case et que l'on peut ecrire sur la case
+        /// </summary>
         public void Next()
         {
 
@@ -71,6 +97,10 @@ namespace PSI_TD_2
                 
             
         }
+
+        /// <summary>
+        /// Permet de passer a la case suivnte : haut droite si on est a gauche, gauche si on est a droite
+        /// </summary>
         private void NextPos()
         {
             if (IsLeft)
