@@ -640,10 +640,9 @@ namespace PSI_TD_2
             } while (!choice);
             QRCode myQR = new QRCode(msg);
             MyImage QR = myQR.Convert_QR_To_Image();
-            QR.Save("QR-Code.bmp");
             Console.Clear();
             Console.WriteLine("Votre fichier à été enregistré sous le nom :\n" +
-                "QR-Code.bmp\n" +
+                "QR_Code.bmp\n" +
                 "Veuillez appuyer sur une touche pour continuer...");
             Console.ReadKey();
         }
@@ -655,8 +654,7 @@ namespace PSI_TD_2
         public static void Negatif(MyImage Image)
         {
             Console.Clear();
-            MyImage im = Image;
-            im.Negatif();
+            MyImage im = Image.Negatif();
             im.Save("Filtre_Negatif.bmp");
             Console.WriteLine("L'image a été enregistrée sous le nom :\n" +
                 "Filtre_Negatif.bmp\n" +
